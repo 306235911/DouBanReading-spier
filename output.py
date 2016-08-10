@@ -10,11 +10,14 @@ class outPut:
         try:
             self.db = MySQLdb.Connect('localhost' , 'root' , '306235911' , 'doubanbook' ,charset="utf8")
             self.cur = self.db.cursor()
+            # 设置发送的SQL语句中使用utf8字符集
             self.cur.execute('SET NAMES utf8')
         except MySQLdb.Error , e:
             print "连接数据库失败 ， 原因 %的： %s" % (e.args[0] , e.args[1])
-            
+    
+    # 从数据库中获取数据        
     def getBook(self, bookType):
+        # 从所提供的表中按score从高到低（即倒序）获取前一百条数据
         sql = "SELECT*FROM %s ORDER BY score DESC LIMIT 100" % bookType
         
         try:
@@ -34,16 +37,21 @@ class outPut:
                 
         except MySQLdb.Error , e:
             print "Error:unable to fetch data,reason: %d : %s" % (e.args[0] ,e.args[1])
-            
+    
+    # 主程序        
     def main(self):
         titleList = self.douban.indexAPI()
         for title in titleList:
             print "%s" % title
         order = str(raw_input("请输入你想要的类型\n")).decode('gbk')
+        while not order in titleList:
+            order = str(raw_input("请输入你想要的类型\n")).decode('gbk')
+        else:
+            self.getBook(order)
         # print "%s类型的书在豆瓣排名前100的是" % order
         # order = raw_input().decode('gbk')
         # print [order]
-        self.getBook(order)
+        # self.getBook(order)
         # self.getBook("小说")
         
 hah = outPut()
