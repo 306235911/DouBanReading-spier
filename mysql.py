@@ -4,9 +4,11 @@ import MySQLdb
 
 class Mysql:
     
+    # 连接数据库
     def __init__(self):
         try:
-            self.db = MySQLdb.Connect('localhost' , 'root' , '306235911' , 'doubanbook')
+            # 连接中加上的 charset="utf8" 可省略下面的 self.db.set_character_set('utf8')
+            self.db = MySQLdb.Connect('localhost' , 'root' , '306235911' , 'doubanbook', charset="utf8")
             self.cur = self.db.cursor()
         except MySQldb.Error , e:
             print "连接数据库错误，原因 %d : %s" % (e.args[0] ,e.args[1])
@@ -17,8 +19,10 @@ class Mysql:
         try:
             self.db.set_character_set('utf8')
             # result = self.cur.execute(sql)
+            
+            # 比起 "INSERT INTO table VALUES(%s,%s,%s)" % (a,b,c) 的用法，更常用的为下面的表达
             result = self.cur.execute(sql,(identity , name , info , score , num))
-            insert_id = self.db.insert_id()
+            # insert_id = self.db.insert_id()
             self.db.commit()
             if result:
                 return True
@@ -30,7 +34,8 @@ class Mysql:
                 print u"数据已存在，未插入数据"
             else:
                 print "插入数据失败，原因 %d : %s" % (e.args[0] ,e.args[1])
-                
+    
+    # 创建数据库表            
     def createTable(self , table):
         sql = """CREATE TABLE %s (
         identity INT UNSIGNED NOT NULL PRIMARY KEY,
