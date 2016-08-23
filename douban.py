@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-# import requests
+import requests
 import urllib2
 import urllib
 import re
@@ -13,7 +13,7 @@ class spider:
     def __init__(self):
         # self.PageNum = 0
         # self.payload = {'start' : self.PageNum , 'type' : 'T'} 
-        self.TitleList = []
+        self.TitleList = ['小说']
         # self.title = None
         self.BaseUrl = 'https://book.douban.com/tag/'
         self.mysql = mysql.Mysql()
@@ -41,15 +41,19 @@ class spider:
     
     # 通过正则表达式获得书名，相关信息，得分，以及评分人数，并写入数据库
     def getContent(self,page,identity,BookType):
-        pattern = re.compile('<li.class="subject-item">.+?title=(".+?").+?<div.class="pub">(.+?)</div>.+?class="rating_nums">(.+?)</span>.+?class="pl">(.+?)</span>', re.S)
+        # 加上图片url以及书本连接的正则表达式
+        pattern = re.compile('<li.class="subject-item">.+?href=(".+?").+?src=(".+?").+?title="(.+?)".+?<div.class="pub">(.+?)</div>.+?class="rating_nums">(.+?)</span>.+?class="pl">(.+?)</span>', re.S)
+        # pattern = re.compile('<li.class="subject-item">.+?title="(.+?)".+?<div.class="pub">(.+?)</div>.+?class="rating_nums">(.+?)</span>.+?class="pl">(.+?)</span>', re.S)
         match = re.findall(pattern, page)
         if match:
             for item in match:
-                name = item[0].strip()
-                info = item[1].strip()
-                score = item[2].strip()
-                num = item[3].strip()
-                if self.mysql.insertData(BookType, identity, name , info , score , num):
+                bookUrl = item[0].strip()
+                imgUrl = item[1].strip()
+                name = item[2].strip()
+                info = item[3].strip()
+                score = item[4].strip()
+                num = item[5].strip()
+                if self.mysql.insertData(BookType, identity, name , info , score , num, bookUrl , imgUrl):
                     print u"保存书目成功"
                 else:
                     print u"保存书目失败"
@@ -68,8 +72,9 @@ class spider:
     def main(self):
         identity = 0
         PageNum = 0
+        self.mysql.createTable()
         for BookType in self.TitleList:
-            self.mysql.createTable(BookType)
+            # self.mysql.createTable(BookType)
             # title = BookType
             
             # 据分析得，各分类中书目到1000以后为无效页面，故只到1000
@@ -85,6 +90,6 @@ class spider:
         
         # page = self.request()
         # self.getContent(page)
-        # 
+        
 hah = spider()
 hah.main()
