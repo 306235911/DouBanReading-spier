@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}找书看{% endblock %}
+
+{% block page_content %}
+<ul>
+    {% for title in titlelist %}
+        <li>
+            <a href="{{url_for('.title',titlename = title) }}">
+                {{title}}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+<!--<h1>这是{{titlelist}}</h1>-->
+{% endblock %}

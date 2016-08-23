@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}找书看{% endblock %}
+
+{% block page_content %}
+<ul>
+    {% for book in books %}
+        <!--<li>
+                {{book.name}} {{book.info}} {{book.score}} {{book.num}}
+        </li>-->
+        <!--<div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span12">
+                    <h3>
+                        {{book.name}} ———— {{book.score}}
+                    </h3>
+                    <p>
+                        {{book.num}} {{book.info}}
+                    </p>
+                </div>
+            </div>
+        </div>-->
+		<div class="container-fluid">
+			<div class="row-fluid">
+				<div class="span2">
+					 <button class="btn btn-link" type="button"><img alt="140x140" src={{book.imgUrl|safe}} /></button>
+					 <!--<a href={{book.bookUrl}}><img src={{book.imgUrl}} /></a>-->
+				</div>
+				<div class="span10">
+					<h3>
+						<a href={{book.bookUrl|safe}}>{{book.name}} ———— {{book.score}}</a>
+					</h3>
+					<p>
+						{{book.num}} {{book.info}}
+					</p>
+				</div>
+			</div>
+		</div>
+    {% endfor %}
+</ul>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			 <button class="btn btn-link btn-block btn-large"" type="button" ><h2><a href="/">主页</a></h2></button>
+		</div>
+	</div>
+</div>
+{% endblock %}
